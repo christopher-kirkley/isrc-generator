@@ -1,3 +1,4 @@
+import os
 import json
 
 """Generate ISRC from the command line."""
@@ -29,28 +30,57 @@ class Isrcs:
             isrcs.append(isrc)
         return isrcs
 
+def retrieve_settings():
+    if os.path.exists('settings.json') == False:
+        file = make_settings_file()
+    with open('settings.json', 'r') as f:
+        data = json.load(f)
+    return data
+
 
 def main():
 
-    i = input(f'Two character country code: [{CC}]')
-    if i != '':
-        CC = i
-    i = input('Registrant of ISRC issuer: []')
-    if i != '':
-        XXX = i
-    i = input(f'Catalog Number: [{NNN}]')
-    if i != '':
-        NNN = i
-    tracks = int(input('Number of tracks:'))
+    json = retrieve_settings()
 
-    isrcs = []
+    while True:
+        country_code = input(f'Two character country code: [{json["country_code"]}] ')
+        if len(country_code) != 2:
+            continue
+        else:
+            break
 
-    for track in range(tracks):
-        isrc = f'{CC}{XXX}{NNN}{track:02d}'
-        isrcs.append(isrc)
+    while True:
+        isrc_registrant = input(f'Registrant of ISRC issuer: [{json["isrc_registrant"]}] ')
+        if len(isrc_registrant) != 3:
+            continue
+        else:
+            break
 
-    for isrc in isrcs:
-        print(isrc)
+    while True:
+        year = input(f'Two digit year: [{json["year"]}] ')
+        if len(year) != 2:
+            continue
+        else:
+            break
+
+    while True:
+        catalog_number = input(f'Three digit catalog number: [{json["catalog_number"]}] ')
+        if len(catalog_number) != 3:
+            continue
+        else:
+            break
+
+    while True:
+        tracks = input('Number of tracks: ')
+        try:
+            tracks = int(tracks)
+            break
+        except:
+            continue
+
+    isrcs = Isrcs(country_code, isrc_registrant, year, catalog_number, tracks)
+    generated_isrcs = isrcs.make_isrcs()
+    print(generated_isrcs)
 
 if __name__ == '__main__':
     main()
