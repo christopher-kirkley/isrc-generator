@@ -1,6 +1,6 @@
 # ISRC Generator
 
-Python scrip to generate ISRCs from the command line.
+Python script to generate ISRCs from the command line.
 
 ## Info
 ISRC codes are 12 characters long, and follow the following conventions.
