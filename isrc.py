@@ -1,6 +1,8 @@
 import os
 import json
 
+import pandas as pd
+
 """Generate ISRC from the command line."""
 
 def make_settings_file():
@@ -21,12 +23,12 @@ class Isrcs:
         self.tracks = tracks
         
     def make_isrcs(self):
-        isrcs = []
+        self.isrcs = []
 
         for self.track in range(self.tracks):
             isrc = f'{self.country_code}{self.isrc_registrant}{self.year}{self.catalog_number}{self.track+1:02d}'
-            isrcs.append(isrc)
-        return isrcs
+            self.isrcs.append(isrc)
+        return self.isrcs
 
     def save_settings(self):
         settings_json = {
@@ -36,6 +38,16 @@ class Isrcs:
                 }
         with open('settings.json', 'w') as f:
             json.dump(settings_json, f)
+
+    def make_csv(self):
+        df = pd.DataFrame({
+            'track_number': [],
+            'isrc': [],
+            })
+        df['isrc'] = self.make_isrcs()
+        df['track_number'] = df.index + 1
+        csv = df.to_csv('isrcs.csv', index=False)
+        return df
 
 def retrieve_settings():
     if os.path.exists('settings.json') == False:
@@ -99,8 +111,12 @@ def main():
 
     generated_isrcs = isrcs.make_isrcs()
 
+    isrcs.make_csv()
 
-    print(generated_isrcs)
+    print('\nOUTPUT:')
+    for isrc in generated_isrcs:
+        print(isrc) 
+    
 
 if __name__ == '__main__':
     main()

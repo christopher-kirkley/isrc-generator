@@ -1,7 +1,8 @@
 import pytest
 import json
+import os
 
-from isrc import make_settings_file, Isrcs, retrieve_settings, validate_input
+from isrc import make_settings_file, Isrcs, retrieve_settings
 
 def test_can_make_setting_file():
     filename = make_settings_file()
@@ -10,8 +11,6 @@ def test_can_make_setting_file():
         assert json.loads(f.read()) == {
                 'country_code': '',
                 'isrc_registrant': '',
-                'year': '',
-                'catalog_number': '',
                 }
 
 def test_can_make_isrcs():
@@ -28,8 +27,6 @@ def test_can_retrieve_settings():
     assert len(settings_json) > 0
     assert settings_json['country_code'] == ''
     assert settings_json['isrc_registrant'] == ''
-    assert settings_json['year'] == ''
-    assert settings_json['catalog_number'] == ''
 
 def test_can_save_settings():
     settings_json = retrieve_settings()
@@ -40,5 +37,10 @@ def test_can_save_settings():
     assert setting_json['isrc_registrant'] == '123'
     assert setting_json['year'] == '20'
     
-    
-
+def test_can_make_csv():
+    test_isrcs = Isrcs('QZ', '123', '20', '012', 10)
+    df = test_isrcs.make_csv()
+    assert len(df) > 0 
+    assert df['track_number'][0] == 1
+    assert os.path.exists('isrcs.csv') 
+    os.remove('isrcs.csv')
