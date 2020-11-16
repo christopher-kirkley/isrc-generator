@@ -7,8 +7,6 @@ def make_settings_file():
     data = {
             'country_code': '',
             'isrc_registrant': '',
-            'year': '',
-            'catalog_number': '',
             }
     with open('settings.json', 'w') as f:
         json.dump(data, f)
@@ -30,6 +28,15 @@ class Isrcs:
             isrcs.append(isrc)
         return isrcs
 
+    def save_settings(self):
+        settings_json = {
+                'country_code': self.country_code,
+                'isrc_registrant': self.isrc_registrant,
+                'year': self.year,
+                }
+        with open('settings.json', 'w') as f:
+            json.dump(settings_json, f)
+
 def retrieve_settings():
     if os.path.exists('settings.json') == False:
         file = make_settings_file()
@@ -43,28 +50,36 @@ def main():
     json = retrieve_settings()
 
     while True:
-        country_code = input(f'Two character country code: [{json["country_code"]}] ')
-        if len(country_code) != 2:
+        i = input(f'Two character country code: [{json["country_code"]}] ')
+        if len(i) != 2 and i != '':
             continue
+        elif i == '':
+            country_code = json['country_code']
+            break
         else:
+            country_code = i
             break
 
     while True:
         isrc_registrant = input(f'Registrant of ISRC issuer: [{json["isrc_registrant"]}] ')
-        if len(isrc_registrant) != 3:
+        if len(isrc_registrant) != 3 and i != '':
             continue
+        elif i == '':
+            isrc_registrant = json['isrc_registrant']
+            break
         else:
+            isrc_registrant = i
             break
 
     while True:
-        year = input(f'Two digit year: [{json["year"]}] ')
+        year = input(f'Two digit year: ')
         if len(year) != 2:
             continue
         else:
             break
 
     while True:
-        catalog_number = input(f'Three digit catalog number: [{json["catalog_number"]}] ')
+        catalog_number = input(f'Three digit catalog number: ')
         if len(catalog_number) != 3:
             continue
         else:
@@ -79,7 +94,12 @@ def main():
             continue
 
     isrcs = Isrcs(country_code, isrc_registrant, year, catalog_number, tracks)
+
+    isrcs.save_settings()
+
     generated_isrcs = isrcs.make_isrcs()
+
+
     print(generated_isrcs)
 
 if __name__ == '__main__':

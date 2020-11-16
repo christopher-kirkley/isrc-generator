@@ -1,7 +1,7 @@
 import pytest
 import json
 
-from isrc import make_settings_file, Isrcs, retrieve_settings
+from isrc import make_settings_file, Isrcs, retrieve_settings, validate_input
 
 def test_can_make_setting_file():
     filename = make_settings_file()
@@ -22,6 +22,7 @@ def test_can_make_isrcs():
     for i in range(10):
         assert isrcs[i] == f'QZ12320012{i+1:02d}'
         
+
 def test_can_retrieve_settings():
     settings_json = retrieve_settings()
     assert len(settings_json) > 0
@@ -30,4 +31,14 @@ def test_can_retrieve_settings():
     assert settings_json['year'] == ''
     assert settings_json['catalog_number'] == ''
 
+def test_can_save_settings():
+    settings_json = retrieve_settings()
+    test_isrcs = Isrcs('QZ', '123', '20', '012', 10)
+    test_isrcs.save_settings()
+    setting_json = retrieve_settings()
+    assert setting_json['country_code'] == 'QZ'
+    assert setting_json['isrc_registrant'] == '123'
+    assert setting_json['year'] == '20'
+    
+    
 
