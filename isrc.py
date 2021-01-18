@@ -1,6 +1,6 @@
 import os
 import json
-
+import pyperclip
 import pandas as pd
 
 """Generate ISRC from the command line."""
@@ -73,8 +73,8 @@ def main():
             break
 
     while True:
-        isrc_registrant = input(f'Registrant of ISRC issuer: [{json["isrc_registrant"]}] ')
-        if len(isrc_registrant) != 3 and i != '':
+        i = input(f'Registrant of ISRC issuer: [{json["isrc_registrant"]}] ')
+        if len(i) != 3 and i != '':
             continue
         elif i == '':
             isrc_registrant = json['isrc_registrant']
@@ -84,17 +84,19 @@ def main():
             break
 
     while True:
-        year = input(f'Two digit year: ')
-        if len(year) != 2:
+        i = input(f'Two digit year: ')
+        if len(i) != 2:
             continue
         else:
+            year = i
             break
 
     while True:
-        catalog_number = input(f'Three digit catalog number: ')
-        if len(catalog_number) != 3:
+        i = input(f'Three digit catalog number: ')
+        if len(i) != 3:
             continue
         else:
+            catalog_number = i
             break
 
     while True:
@@ -116,6 +118,13 @@ def main():
     print('\nOUTPUT:')
     for isrc in generated_isrcs:
         print(isrc) 
+
+    # copy to clipboard
+    isrc_string = ""
+    for isrc in generated_isrcs:
+        isrc_string = isrc_string + isrc + "\n"
+    pyperclip.copy(isrc_string)
+    
     
 
 if __name__ == '__main__':
