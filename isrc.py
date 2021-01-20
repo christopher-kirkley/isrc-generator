@@ -1,7 +1,10 @@
+#!/home/ck/work_scripts/isrc-generator/venv/bin/python
+
 import os
 import json
 import pyperclip
 import pandas as pd
+from pandas.io.clipboard import copy
 
 """Generate ISRC from the command line."""
 
@@ -123,9 +126,11 @@ def main():
     isrc_string = ""
     for isrc in generated_isrcs:
         isrc_string = isrc_string + isrc + "\n"
-    pyperclip.copy(isrc_string)
     
+    return isrc_string
     
 
 if __name__ == '__main__':
-    main()
+    isrcs = main()
+    #os.system(f"echo {isrcs} | /usr/bin/xsel -b")
+    copy(isrcs)

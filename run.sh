@@ -1,2 +1,5 @@
 #!/bin/env bash
-./venv/bin/python isrc.py
+
+SCRIPTDIR=~/work_scripts/isrc-generator/
+
+$SCRIPTDIR/venv/bin/python $SCRIPTDIR/isrc.py
